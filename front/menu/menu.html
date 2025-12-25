@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimo 早餐店 - 菜單</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/menu.css">
+</head>
+<body>
+    <header></header>
+
+    <main>
+        <section id="featured-section" class="hidden">
+            <h2>熱門推薦</h2>
+            <div id="featured-container" class="featured-scroll">
+                </div>
+        </section>
+
+        <section id="menu-section">
+            <h2>美味餐點</h2>
+            <div class="category-filter">
+                <button class="filter-btn active" data-cat="all">全部</button>
+                <button class="filter-btn" data-cat="蛋餅類">蛋餅類</button>
+                <button class="filter-btn" data-cat="吐司類">吐司類</button>
+                <button class="filter-btn" data-cat="飲料">飲料</button>
+            </div>
+
+            <div id="product-list" class="product-grid">
+                <p>載入中...</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer></footer>
+
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-product-name">餐點名稱</h3>
+            <p id="modal-product-desc">描述...</p>
+            <p class="price">NT$ <span id="modal-product-price">0</span></p>
+            
+            <div class="custom-options">
+                <h4>客製化選項</h4>
+                <label><input type="checkbox" value="加蛋" data-price="15"> 加蛋 (+$15)</label>
+                <label><input type="checkbox" value="加起司" data-price="10"> 加起司 (+$10)</label>
+                
+                <h4>蛋熟度 (若有加蛋)</h4>
+                <select id="egg-option">
+                    <option value="全熟">全熟</option>
+                    <option value="半熟">半熟</option>
+                </select>
+                
+                <h4>數量</h4>
+                <div class="quantity-control">
+                    <button id="qty-minus">-</button>
+                    <span id="qty-value">1</span>
+                    <button id="qty-plus">+</button>
+                </div>
+            </div>
+
+            <button id="add-to-cart-btn" class="primary-btn">加入購物車</button>
+        </div>
+    </div>
+
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/menu.js"></script>
+</body>
+</html>

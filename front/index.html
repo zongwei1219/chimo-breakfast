@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimo 早餐店</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <style>
+        /* 首頁專用樣式 */
+        .hero-section {
+            background-color: #ffe0b2;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 0 0 50% 50% / 20px;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .cta-btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+            transition: transform 0.2s;
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary-dark);
+        }
+        .admin-link {
+            display: block;
+            margin-top: 50px;
+            color: #999;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="hero-section">
+            <h1 class="hero-title">Chimo 早餐店</h1>
+            <p class="hero-subtitle">開啟美好的一天，從一份熱騰騰的早餐開始</p>
+            
+            <a href="menu/menu.html" class="cta-btn">立即點餐</a>
+        </section>
+
+        <div class="text-center mt-20">
+            <img src="https://via.placeholder.com/400x300?text=Delicious+Breakfast" alt="早餐示意圖" style="max-width: 100%; border-radius: 10px;">
+        </div>
+
+        <a href="admin/login.html" class="admin-link">店員/管理員登入</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Chimo Breakfast</p>
+    </footer>
+</body>
+</html>

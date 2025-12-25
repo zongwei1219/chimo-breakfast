@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>確認結帳 - Chimo</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <style>
+        .checkout-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .order-summary {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        .total-row {
+            border-top: 1px solid #ccc;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header></header> <main>
+        <div class="checkout-container">
+            <h2>確認訂單資訊</h2>
+            
+            <div class="order-summary" id="order-summary">
+                <p>載入中...</p>
+            </div>
+
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="table-number">桌號 (內用必填)</label>
+                    <input type="text" id="table-number" placeholder="例如: A1 (外帶請留空)">
+                </div>
+
+                <div class="form-group">
+                    <label for="pickup-time">預計取餐時間</label>
+                    <select id="pickup-time" required>
+                        <option value="盡快">盡快 (約 10-15 分鐘)</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="customer-note">備註</label>
+                    <textarea id="customer-note" rows="3" placeholder="例如: 飲料去冰，不要免洗餐具..."></textarea>
+                </div>
+
+                <button type="submit" class="primary-btn" style="width: 100%;">確認送出訂單</button>
+                <a href="../cart/cart.html" class="secondary-btn text-center" style="display:block; margin-top:10px; text-decoration:none;">返回購物車</a>
+            </form>
+        </div>
+    </main>
+
+    <footer></footer> <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/ui.js"></script>
+    <script>
+        // 頁面載入時執行
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = Cart.get();
+            if (cart.length === 0) {
+                alert('購物車是空的');
+                window.location.href = '../menu/menu.html';
+                return;
+            }
+            renderSummary(cart);
+        });
+
+        function renderSummary(cart) {
+            const container = document.getElementById('order-summary');
+            let total = 0;
+            
+            const itemsHtml = cart.map(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                return `
+                    <div class="summary-row">
+                        <span>${item.name} x ${item.quantity} ${item.options ? `<small>(${item.options})</small>` : ''}</span>
+                        <span>$${subtotal}</span>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                ${itemsHtml}
+                <div class="summary-row total-row">
+                    <span>總計</span>
+                    <span>$${total}</span>
+                </div>
+            `;
+        }
+
+        // 送出訂單邏輯 (移植自 cart.js)
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cart = Cart.get();
+            if (cart.length === 0) return;
+
+            // 1. 取得資料
+            const tableNumber = document.getElementById('table-number').value.trim();
+            const pickupTime = document.getElementById('pickup-time').value;
+            const customerNote = document.getElementById('customer-note').value.trim();
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // 2. 取得會員 ID
+            let userId = null;
+            const userStr = localStorage.getItem('chimo_user');
+            if (userStr) {
+                try { userId = JSON.parse(userStr).id; } catch(e){}
+            }
+
+            // 3. 組合資料
+            const orderData = {
+                user_id: userId,
+                table_number: tableNumber || '外帶',
+                pickup_time: pickupTime,
+                customer_note: customerNote,
+                total_amount: totalAmount,
+                items: cart.map(item => ({
+                    product_id: item.product_id,
+                    quantity: item.quantity,
+                    price: item.price,
+                    options: item.options
+                }))
+            };
+
+            // 4. 送出 API
+            try {
+                UI.showLoading(); // 使用 ui.js 的效果
+                const res = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await res.json();
+                UI.hideLoading();
+
+                if (res.ok) {
+                    UI.showToast(`訂單建立成功！單號: ${result.orderId}`);
+                    Cart.clear();
+                    updateCartCount();
+                    // 成功後導回菜單或個人頁面
+                    setTimeout(() => {
+                        window.location.href = userId ? '../profile/profile.html' : '../menu/menu.html';
+                    }, 1500);
+                } else {
+                    UI.showToast('失敗: ' + result.message, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                UI.hideLoading();
+                UI.showToast('連線錯誤', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

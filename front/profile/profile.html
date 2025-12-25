@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員中心 - Chimo</title>
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <style>
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .history-card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .history-card h4 { margin: 0 0 5px 0; }
+        .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; background: #eee; }
+    </style>
+</head>
+<body>
+    <header></header>
+    <main>
+        <div class="profile-header">
+            <h2>你好，<span id="user-name">會員</span></h2>
+            <button onclick="logout()" class="secondary-btn">登出</button>
+        </div>
+
+        <h3>歷史訂單 (最近 10 筆)</h3>
+        <div id="history-list">
+            <p>載入中...</p>
+        </div>
+    </main>
+    <footer></footer>
+
+    <script src="../../assets/js/utils.js"></script>
+    <script>
+        // 登出邏輯
+        function logout() {
+            localStorage.removeItem('chimo_user');
+            window.location.href = '../auth/login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 檢查登入
+            const userStr = localStorage.getItem('chimo_user');
+            if (!userStr) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            document.getElementById('user-name').innerText = user.username;
+
+            // 載入歷史訂單
+            try {
+                const res = await fetch(`${API_BASE}/users/${user.id}/history`);
+                const orders = await res.json();
+                
+                const list = document.getElementById('history-list');
+                if(orders.length === 0) {
+                    list.innerHTML = '<p>尚無訂單紀錄。</p>';
+                    return;
+                }
+
+                list.innerHTML = orders.map(o => `
+                    <div class="history-card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <h4>訂單 #${o.id}</h4>
+                            <span class="status-badge">${o.status}</span>
+                        </div>
+                        <p>金額: $${o.total_amount} | 時間: ${new Date(o.created_at).toLocaleString()}</p>
+                    </div>
+                `).join('');
+
+            } catch(err) {
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>

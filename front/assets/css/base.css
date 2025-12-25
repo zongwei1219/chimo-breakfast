@@ -1,0 +1,53 @@
+/* front/assets/css/base.css */
+:root {
+    --primary-color: #ff9800; /* 早餐店溫暖橘 */
+    --primary-dark: #e65100;
+    --secondary-color: #4caf50; /* 新鮮綠 */
+    --text-color: #333;
+    --bg-color: #f9f9f9;
+    --white: #ffffff;
+    --border-color: #ddd;
+    --danger-color: #f44336;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; padding: 0; }
+
+/* 通用按鈕樣式 */
+button { cursor: pointer; font-family: inherit; transition: 0.2s; }
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+.primary-btn:hover { background-color: var(--primary-dark); }
+
+.secondary-btn {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+.secondary-btn:hover { background-color: #eee; }
+
+/* 通用輔助類別 */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }

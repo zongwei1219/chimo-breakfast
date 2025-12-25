@@ -1,0 +1,56 @@
+/* front/assets/css/layout.css */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+header nav a {
+    margin-left: 1.5rem;
+    font-weight: 500;
+}
+header nav a:hover, header nav a.active {
+    color: var(--primary-color);
+}
+
+main {
+    flex: 1; /* 讓內容區自動撐開 */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+footer {
+    background-color: #333;
+    color: #eee;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+/* RWD: 手機版調整 */
+@media (max-width: 768px) {
+    header { padding: 1rem; }
+    header .logo { font-size: 1.2rem; }
+    header nav a { margin-left: 10px; font-size: 0.9rem; }
+}

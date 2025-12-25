@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,      // defaultdb
 
   ssl: {
-    rejectUnauthorized: true          // Aiven 要求 SSL
+    rejectUnauthorized: false          // Aiven 要求 SSL
   },
 
   waitForConnections: true,

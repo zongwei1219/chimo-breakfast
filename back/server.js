@@ -39,8 +39,6 @@ app.listen(port, () => {
 });
 
 /* 補user & cart */
-const usersRoutes = require('./routes/users');
-const cartRoutes = require('./routes/cart');
 
 app.use('/api/users', usersRoutes);
 app.use('/api/cart', cartRoutes);
